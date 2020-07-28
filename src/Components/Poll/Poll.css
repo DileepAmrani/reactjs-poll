@@ -1,0 +1,9 @@
+.poll-card{
+    box-shadow: 8px 8px 16px 0 rgba(0, 0, 0, 0.15),
+    -8px -8px 12px 0 rgba(255, 255, 255, 0.5);
+    margin-bottom: 10px;
+}
+.poll-card:hover {
+    box-shadow: inset 0px 0px 10px 0 rgba(0, 0, 0, 0.15),
+      inset -8px -8px 12px 0 rgba(255, 255, 255, 0.5);
+  }
