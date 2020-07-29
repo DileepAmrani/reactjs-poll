@@ -44,7 +44,7 @@ class PollComponent extends React.Component {
     const newPollAnswers = pollAnswers.map(answer => {
       if (answer.option === voteAnswer){
         answer.votes++
-        firebaseApp.database().ref(`polls/${i}`).update({pollAnswers}).then(()=>{
+        firebaseApp.database().ref(`poll/${i}`).update({pollAnswers}).then(()=>{
             alert("data updated")
         })
         return answer

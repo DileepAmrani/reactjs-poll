@@ -24,10 +24,12 @@ componentDidMount(){
   //   alert("data added")
   // })
 
-  firebaseApp.database().ref("polls").once("value" , (snap)=>{
+  firebaseApp.database().ref("poll").on("child_added" , (snap)=>{
     let data = snap.val();
+    data.uid =  snap.key
+    polls.push(data)
     this.setState({
-      polls:data
+      polls
     })
   })
 }
@@ -42,8 +44,8 @@ componentDidMount(){
         <br />
         <br />
             {
-              this.state.polls.map((v,i)=>{
-              return <Poll key={i} index={i} data={v}/>
+             this.state.polls && this.state.polls.map((v,i)=>{
+              return <Poll key={i} index={v.uid} data={v}/>
               })
             }
     
