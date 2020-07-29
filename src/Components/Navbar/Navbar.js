@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar(props) {
   const classes = useStyles();
 
   return (
@@ -31,7 +31,7 @@ export default function ButtonAppBar() {
           <Typography variant='h5' className={classes.title}>
                 Voting Poll
           </Typography>
-          <Button  color="inherit">Logout <ExitToApp /></Button> 
+          <Button  color="inherit" onClick={props.signOut}>Logout <ExitToApp /></Button> 
         </Toolbar>
       </AppBar>
     </div>

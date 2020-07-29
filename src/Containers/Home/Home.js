@@ -1,60 +1,81 @@
 import React from "react";
-import "./Home.css"
+import "./Home.css";
 import Navbar from "./../../Components/Navbar/Navbar";
 import Container from "@material-ui/core/Container";
-import Poll from "./../../Components/Poll/Poll"
-import {firebaseApp} from "./../../Config/firebase"
+import Poll from "./../../Components/Poll/Poll";
+import { Loader } from "./../../Components"
+ import { firebaseApp } from "./../../Config/firebase";
 class Home extends React.Component {
-  constructor(){
+  constructor() {
     super();
-    this.state = {  
-      polls: [
-       
-      ]
+    this.state = {
+      polls: [],
+      loader: false
+    };
   }
-  
-}
 
+  // com
+  componentDidMount() {
+    firebaseApp.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.props.history.push("/home");
+      } else {
+        this.props.history.push("/");
+      }
+    });
 
-
-// com
-componentDidMount(){
-  let {polls} = this.state
-  // firebaseApp.database().ref("/").child('Polls').set(polls).then(()=>{
-  //   alert("data added")
-  // })
-
-  firebaseApp.database().ref("poll").on("child_added" , (snap)=>{
-    let data = snap.val();
-    data.uid =  snap.key
-    polls.push(data)
+    let { polls, loader } = this.state;
     this.setState({
-      polls
+      loader: true
     })
-  })
-}
+    firebaseApp
+      .database()
+      .ref("poll")
+      .on("child_added", (snap) => {
+        let data = snap.val();
+        data.uid = snap.key;
+        polls.push(data);
+        this.setState({
+          polls,
+          loader: false
+        });
+      })   
+  }
 
+  signOutHandler = () => {
+    firebaseApp
+      .auth()
+      .signOut()
+      .then(() => {})
+      .catch(error => {});
+  };
 
-  render(){
+  render() {
     return (
       <div className="home">
-        <Navbar />
-          <div className="poll_container">
-        <Container maxWidth="sm" >
-        <br />
-        <br />
-            {
-             this.state.polls && this.state.polls.map((v,i)=>{
-              return <Poll key={i} index={v.uid} data={v}/>
-              })
+        <Navbar signOut={this.signOutHandler} />
+        <div className="poll_container">
+          {
+            this.state.loader ?
+            <div>
+              <br />
+              <br />
+            <Loader />
+             </div> 
+            :
+          <Container maxWidth="sm">
+            <br />
+            <br />
+            {this.state.polls &&
+              this.state.polls.map((v, i) => {
+                return <Poll key={i} index={v.uid} data={v} />;
+              })}
+          </Container>
             }
-    
-        </Container>
-          </div>
+        </div>
       </div>
     );
   }
-
 }
 
 export default Home;

@@ -1,66 +1,68 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "./Login.css";
+import "./Admin.css";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { firebaseApp } from "./../../Config/firebase";
+import {firebaseApp} from "../../Config/firebase"
 import Swal from "sweetalert2";
 
+
+
 class Login extends React.Component {
-  constructor() {
+  constructor(){
     super();
     this.state = {
       email: "",
-      password: "",
-    };
+      password: ""
+    }
   }
 
-  componentDidMount() {
-    firebaseApp.auth().onAuthStateChanged((user) => {
+  componentDidMount(){
+    firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
-        this.props.history.push("/home");
+        this.props.history.push("/dashboard");
       } else {
-        this.props.history.push("/");
+        this.props.history.push("/admin");
       }
     });
   }
 
-  handelChange = (e) => {
+  handelChange = (e)=>{
     this.setState({
-      [e.target.name]: e.target.value,
-    });
-  };
+      [e.target.name]: e.target.value
+    })
+  }
 
-  submitHandle = async () => {
-    let { email, password } = this.state;
-    await firebaseApp
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((user) => {
+
+  submitHandle = async () =>{
+    let {email,password } = this.state
+    firebaseApp.database().ref("admin").once("value", (snap)=>{
+      let data = snap.val();
+      if(data && data.email === email && data.password === password ){
         Swal.fire("Login Successful!", "success");
-        this.props.history.push("/home");
-      })
-      .catch((error) => {
-        // var errorCode = error.code;
-        var errorMessage = error.message;
-          Swal.fire({
-            icon: 'error',
-            text: error.message,
-          })
-        console.log(errorMessage);
-      });
-  };
+        localStorage.setItem("admin", JSON.stringify(data));
+        this.props.history.push("/dashboard");
+      }
+      else{
+        Swal.fire({
+          icon: 'error',
+          text: "Opps.. Login Un Successful!",
+        })
+      }
+    })
+  }
 
-  render() {
-    console.log(this.state);
+
+  render() { 
+    console.log(this.state)
     return (
       <div className="login">
         <div className="spacer" />
         <Container maxWidth="sm">
           <Paper elevation={3} className="paper">
             <div className="form-title">
+              <span>Welcome Admin</span><br />
               <span>LOG IN</span>
             </div>
             <br />
@@ -89,11 +91,7 @@ class Login extends React.Component {
             />
             <br />
             <br />
-            <div style={{ textAlign: "right" }}>
-              <span>
-                Don't have Account? <Link to="/register">Signup</Link>
-              </span>
-            </div>
+         
             <br />
 
             <Button
@@ -102,9 +100,9 @@ class Login extends React.Component {
               color="primary"
               style={{ width: "40%", height: "40px" }}
               onClick={this.submitHandle}
-            >
-              Log In
-            </Button>
+              >
+                Log In 
+            </Button>            
           </Paper>
         </Container>
       </div>
@@ -113,3 +111,4 @@ class Login extends React.Component {
 }
 
 export default Login;
+
