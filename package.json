@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@data-ui/histogram": "0.0.84",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "firebase": "^7.17.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-dynamic-charts": "^1.0.5",
     "react-polls": "^1.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
